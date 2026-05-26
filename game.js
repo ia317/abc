@@ -47,7 +47,7 @@ let keys = {};
 let shootCooldown = 0;
 let spawnTimer = 0;
 let spawnInterval = 80;
-let letterSpeed = 1.4;
+let letterSpeed = 0.6;
 
 // --- Group helpers ---
 // Always 5 letters per group across all rounds
@@ -146,7 +146,7 @@ function spawnLetter() {
     letter,
     x: 50 + Math.random() * (canvas.width - 100),
     y: -36,
-    speed: letterSpeed + Math.random() * 0.6,
+    speed: letterSpeed + Math.random() * 0.3,
     wobble: Math.random() * Math.PI * 2,
     wobbleSpeed: (Math.random() - 0.5) * 0.04,
   });
@@ -442,7 +442,7 @@ function update() {
           overlay.style.display = 'block';
         }
       } else {
-        letterSpeed = Math.min(3, 1.4 + (groupIdx + (round - 1) * 5) * 0.15);
+        letterSpeed = Math.min(1.8, 0.6 + (groupIdx + (round - 1) * 5) * 0.08);
         spawnInterval = Math.max(45, 80 - groupIdx * 5);
         initGroup();
         state = 'playing';
@@ -456,7 +456,7 @@ function update() {
     if (roundCompleteTimer <= 0) {
       round++;
       groupIdx = 0;
-      letterSpeed = 1.4 + (round - 1) * 0.3;
+      letterSpeed = 0.6 + (round - 1) * 0.15;
       spawnInterval = 80;
       initGroup();
       state = 'playing';
