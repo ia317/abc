@@ -1,0 +1,59 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <title>ABC Shooter</title>
+  <style>
+    * { margin: 0; padding: 0; box-sizing: border-box; }
+    body { background: #000; display: flex; flex-direction: column; align-items: center; justify-content: center; height: 100vh; font-family: 'Courier New', monospace; color: #fff; overflow: hidden; }
+    canvas { border: 1px solid #222; display: block; position: relative; }
+    #ui {
+      position: absolute;
+      top: 10px;
+      left: 50%;
+      transform: translateX(-50%);
+      display: flex;
+      gap: 40px;
+      font-size: 15px;
+      pointer-events: none;
+      background: rgba(0,0,0,0.6);
+      padding: 6px 20px;
+      border: 1px solid #333;
+    }
+    #ui span { color: #aaa; }
+    #ui span b { color: #0f0; }
+    #overlay {
+      position: absolute;
+      top: 50%;
+      left: 50%;
+      transform: translate(-50%, -50%);
+      text-align: center;
+      pointer-events: none;
+    }
+    #overlay h1 { font-size: 44px; color: #0f0; text-shadow: 0 0 20px #0f0; margin-bottom: 14px; }
+    #overlay .sub { font-size: 18px; color: #aaa; margin-bottom: 10px; }
+    #overlay .hint { font-size: 14px; color: #555; }
+    #version { position: absolute; bottom: 8px; right: 12px; font-size: 11px; color: #333; }
+    #wrapper { position: relative; }
+  </style>
+</head>
+<body>
+  <div id="wrapper">
+    <canvas id="game"></canvas>
+    <div id="ui">
+      <span>SCORE <b id="score">0</b></span>
+      <span>LIVES <b id="lives">3</b></span>
+      <span>LEVEL <b id="wave">1</b></span>
+    </div>
+    <div id="overlay">
+      <h1 id="title">ABC SHOOTER</h1>
+      <p class="sub" id="subtitle">Shoot the glowing letter shown at the bottom!</p>
+      <p class="hint">← → to move &nbsp;|&nbsp; SPACE to shoot</p>
+      <br>
+      <p class="sub" style="color:#0f0">Press SPACE to Start</p>
+    </div>
+    <div id="version">v1.0.0</div>
+  </div>
+  <script src="game.js"></script>
+</body>
+</html>
