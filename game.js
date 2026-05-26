@@ -238,11 +238,43 @@ function drawTopLetters() {
   const startX = (canvas.width - totalW) / 2;
   const y = 8;
 
-  // Background strip
+  // Background strip behind group letters
   ctx.fillStyle = 'rgba(0,0,0,0.55)';
   ctx.beginPath();
   ctx.roundRect(startX - 14, y - 4, totalW + 28, boxH + 8, 10);
   ctx.fill();
+
+  // --- BIG TARGET BOX (right side) ---
+  const color = LETTER_COLORS[targetLetter.toUpperCase()];
+  const pulse = 0.5 + 0.5 * Math.sin(Date.now() / 260);
+  const tx = canvas.width - 130, ty = y - 4, tw = 120, th = boxH + 8;
+  ctx.save();
+  ctx.shadowColor = color;
+  ctx.shadowBlur = 18 + pulse * 12;
+  ctx.fillStyle = color + '22';
+  ctx.strokeStyle = color;
+  ctx.lineWidth = 2.5;
+  ctx.beginPath();
+  ctx.roundRect(tx, ty, tw, th, 10);
+  ctx.fill();
+  ctx.stroke();
+  ctx.shadowBlur = 0;
+
+  ctx.textAlign = 'center';
+  ctx.textBaseline = 'middle';
+  ctx.fillStyle = '#888';
+  ctx.font = 'bold 11px Courier New';
+  ctx.fillText('SHOOT', tx + tw / 2, ty + 13);
+
+  const display = round === 3
+    ? `${targetLetter.toUpperCase()} ${targetLetter.toLowerCase()}`
+    : targetLetter;
+  ctx.fillStyle = '#fff';
+  ctx.shadowColor = color;
+  ctx.shadowBlur = 14;
+  ctx.font = `bold ${round === 3 ? 26 : 34}px Courier New`;
+  ctx.fillText(display, tx + tw / 2, ty + th / 2 + 6);
+  ctx.restore();
 
   for (let i = 0; i < base.length; i++) {
     const baseLetter = base[i];
