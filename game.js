@@ -50,19 +50,12 @@ let spawnInterval = 80;
 let letterSpeed = 1.4;
 
 // --- Group helpers ---
+// Always 5 letters per group across all rounds
 function currentGroup() {
   const g = BASE_GROUPS[groupIdx];
-  if (round === 1) return g;                           // ['A','B','C','D','E']
+  if (round === 1) return g;                            // ['A','B','C','D','E']
   if (round === 2) return g.map(l => l.toLowerCase()); // ['a','b','c','d','e']
-  // Round 3: both cases interleaved ['A','a','B','b',...]
-  const both = [];
-  for (const l of g) { both.push(l); both.push(l.toLowerCase()); }
-  return both;
-}
-
-function displayGroup() {
-  // For the progress bar, show base letters only (both forms in round 3)
-  return BASE_GROUPS[groupIdx];
+  return g;                                             // round 3: same 5 uppercase as base, either case accepted
 }
 
 // Is a falling letter considered "the target" in the current round?
@@ -186,8 +179,8 @@ function drawShip(x, y, w, h, alpha) {
 function drawFallingLetter(fl) {
   const color = letterColor(fl.letter);
   const isTarget = isTargetMatch(fl);
-  const g = currentGroup();
-  const idx = g.indexOf(fl.letter);
+  const base = BASE_GROUPS[groupIdx];
+  const idx = base.indexOf(fl.letter.toUpperCase());
   const isLearned = idx >= 0 && learnedFlags[idx];
 
   ctx.save();
@@ -250,19 +243,9 @@ function drawProgressBar() {
     const baseLetter = base[i];
     const color = LETTER_COLORS[baseLetter];
 
-    // In round 3 each base letter has 2 flags (uppercase + lowercase)
-    let learned, isCurrent;
-    if (round < 3) {
-      learned = learnedFlags[i] ?? false;
-      isCurrent = targetIdx === i && !learned;
-    } else {
-      // round 3: pairs at i*2 and i*2+1
-      const upper = learnedFlags[i * 2] ?? false;
-      const lower = learnedFlags[i * 2 + 1] ?? false;
-      learned = upper && lower;
-      const currentBase = BASE_GROUPS[groupIdx][targetIdx < g.length ? Math.floor(targetIdx / 2) : 0];
-      isCurrent = currentBase === baseLetter && !learned;
-    }
+    // All rounds: 5 flags, one per letter
+    const learned = learnedFlags[i] ?? false;
+    const isCurrent = targetIdx === i && !learned;
 
     const x = startX + i * (barW + gap);
     ctx.save();
@@ -279,18 +262,14 @@ function drawProgressBar() {
     ctx.fill();
     ctx.stroke();
 
-    // Show Aa in round 3, just A or a otherwise
     ctx.shadowBlur = 0;
     ctx.textAlign = 'center';
     ctx.textBaseline = 'middle';
     if (round === 3) {
-      const upper = learnedFlags[i * 2] ?? false;
-      const lower = learnedFlags[i * 2 + 1] ?? false;
-      ctx.font = 'bold 14px Courier New';
-      ctx.fillStyle = upper ? color : (isCurrent ? '#fff' : '#555');
-      ctx.fillText(baseLetter, x + barW / 2 - 8, y + barH / 2 - 2);
-      ctx.fillStyle = lower ? color : (isCurrent ? '#fff' : '#555');
-      ctx.fillText(baseLetter.toLowerCase(), x + barW / 2 + 8, y + barH / 2 - 2);
+      // Show Aa side by side
+      ctx.font = `bold ${isCurrent ? 15 : 13}px Courier New`;
+      ctx.fillStyle = learned ? color : isCurrent ? '#fff' : '#555';
+      ctx.fillText(`${baseLetter}${baseLetter.toLowerCase()}`, x + barW / 2, y + barH / 2 - (learned ? 4 : 0));
     } else {
       ctx.fillStyle = learned ? color : isCurrent ? '#fff' : '#555';
       ctx.font = `bold ${isCurrent ? 24 : 20}px Courier New`;
@@ -445,11 +424,7 @@ function update() {
           score += 10 * (round * (groupIdx + 1));
           scoreEl.textContent = score;
           spawnParticlesAt(fl.x, fl.y, letterColor(fl.letter), 18);
-          // In round 3, mark the specific case that was hit
-          const g = currentGroup();
-          const hitIdx = g.indexOf(fl.letter);
-          if (hitIdx >= 0) learnedFlags[hitIdx] = true;
-          else learnedFlags[targetIdx] = true;
+          learnedFlags[targetIdx] = true;
           // Remove all copies of this letter (any case) from screen
           fallingLetters = fallingLetters.filter(x => x.letter.toUpperCase() !== fl.letter.toUpperCase());
           nextTarget();
