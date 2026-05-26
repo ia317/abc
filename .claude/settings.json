@@ -1,0 +1,18 @@
+{
+  "hooks": {
+    "PostToolUse": [
+      {
+        "matcher": "Write|Edit",
+        "hooks": [
+          {
+            "type": "command",
+            "command": "powershell -File \"c:\\Users\\idana\\Documents\\abc\\bump-version.ps1\"",
+            "shell": "powershell",
+            "timeout": 30,
+            "statusMessage": "Bumping version and committing..."
+          }
+        ]
+      }
+    ]
+  }
+}
