@@ -565,7 +565,6 @@ function draw() {
 
   for (const b of bullets) drawBullet(b);
 
-  drawProgressBar();
 
   // Level complete banner
   if (state === 'levelcomplete') {
