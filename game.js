@@ -90,28 +90,35 @@ function drawShip(x, y, w, h, alpha) {
   ctx.save();
   ctx.globalAlpha = alpha ?? 1;
   ctx.translate(x, y);
+
+  const pulse = 0.5 + 0.5 * Math.sin(Date.now() / 300);
+  const glowSize = 8 + pulse * 6;
+
+  // Outer glow
+  ctx.shadowColor = '#0f0';
+  ctx.shadowBlur = glowSize;
+
+  // Draw S shape using two arcs
+  const r = w * 0.42;
   ctx.strokeStyle = '#0f0';
-  ctx.fillStyle = 'rgba(0,255,0,0.15)';
-  ctx.lineWidth = 2.5;
+  ctx.lineWidth = 3.5;
+  ctx.lineCap = 'round';
+  ctx.lineJoin = 'round';
+
   ctx.beginPath();
-  ctx.moveTo(0, -h / 2);
-  ctx.lineTo(-w / 2, h / 2);
-  ctx.lineTo(-w / 4, h / 4);
-  ctx.lineTo(0, h / 3);
-  ctx.lineTo(w / 4, h / 4);
-  ctx.lineTo(w / 2, h / 2);
-  ctx.closePath();
-  ctx.fill();
+  // Top arc of S: right-facing bump at top
+  ctx.arc(r * 0.18, -r * 0.55, r * 0.55, Math.PI * 0.05, Math.PI, true);
+  // Bottom arc of S: left-facing bump at bottom (continues from midpoint)
+  ctx.arc(-r * 0.18, r * 0.55, r * 0.55, Math.PI * 1.05, 0, false);
   ctx.stroke();
-  // Engine thrust
-  const thrust = 0.5 + 0.5 * Math.sin(Date.now() / 80);
-  ctx.fillStyle = `rgba(0,180,255,${thrust})`;
+
+  // Engine thrust glow at bottom
+  ctx.shadowBlur = 12;
+  ctx.fillStyle = `rgba(0,200,255,${0.5 + 0.4 * pulse})`;
   ctx.beginPath();
-  ctx.ellipse(-w / 5, h / 3, 5, 3, 0, 0, Math.PI * 2);
+  ctx.ellipse(0, h * 0.45, 5, 4 + pulse * 3, 0, 0, Math.PI * 2);
   ctx.fill();
-  ctx.beginPath();
-  ctx.ellipse(w / 5, h / 3, 5, 3, 0, 0, Math.PI * 2);
-  ctx.fill();
+
   ctx.restore();
 }
 
