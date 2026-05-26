@@ -145,7 +145,7 @@ function spawnLetter() {
   fallingLetters.push({
     letter,
     x: 50 + Math.random() * (canvas.width - 100),
-    y: -30,
+    y: -36,
     speed: letterSpeed + Math.random() * 0.6,
     wobble: Math.random() * Math.PI * 2,
     wobbleSpeed: (Math.random() - 0.5) * 0.04,
@@ -228,6 +228,83 @@ function drawBullet(b) {
   ctx.rect(b.x - 3, b.y - 8, 6, 16);
   ctx.fill();
   ctx.restore();
+}
+
+// Top banner: 5 letters of current group, target highlighted
+function drawTopLetters() {
+  const base = BASE_GROUPS[groupIdx];
+  const boxW = 72, boxH = 58, gap = 12;
+  const totalW = base.length * boxW + (base.length - 1) * gap;
+  const startX = (canvas.width - totalW) / 2;
+  const y = 8;
+
+  // Background strip
+  ctx.fillStyle = 'rgba(0,0,0,0.55)';
+  ctx.beginPath();
+  ctx.roundRect(startX - 14, y - 4, totalW + 28, boxH + 8, 10);
+  ctx.fill();
+
+  for (let i = 0; i < base.length; i++) {
+    const baseLetter = base[i];
+    const color = LETTER_COLORS[baseLetter];
+    const learned = learnedFlags[i] ?? false;
+    const isTarget = targetIdx === i && !learned;
+    const x = startX + i * (boxW + gap);
+    const pulse = 0.5 + 0.5 * Math.sin(Date.now() / 260);
+
+    ctx.save();
+
+    // Box
+    if (isTarget) {
+      ctx.shadowColor = color;
+      ctx.shadowBlur = 16 + pulse * 10;
+    }
+    ctx.fillStyle = isTarget ? color + '33' : learned ? '#ffffff0a' : '#ffffff0f';
+    ctx.strokeStyle = isTarget ? color : learned ? '#ffffff22' : '#ffffff28';
+    ctx.lineWidth = isTarget ? 2.5 : 1;
+    ctx.beginPath();
+    ctx.roundRect(x, y, boxW, boxH, 8);
+    ctx.fill();
+    ctx.stroke();
+    ctx.shadowBlur = 0;
+
+    // Letter(s)
+    ctx.textAlign = 'center';
+    ctx.textBaseline = 'middle';
+    const centerX = x + boxW / 2;
+    const centerY = y + boxH / 2 - (learned ? 5 : 0);
+
+    if (round === 3) {
+      ctx.font = `bold ${isTarget ? 22 : 17}px Courier New`;
+      ctx.fillStyle = isTarget ? '#fff' : learned ? color + '55' : color + '99';
+      if (isTarget) { ctx.shadowColor = color; ctx.shadowBlur = 10; }
+      ctx.fillText(`${baseLetter}${baseLetter.toLowerCase()}`, centerX, centerY);
+    } else {
+      const display = round === 2 ? baseLetter.toLowerCase() : baseLetter;
+      ctx.font = `bold ${isTarget ? 32 : 24}px Courier New`;
+      ctx.fillStyle = isTarget ? '#fff' : learned ? color + '55' : color + '99';
+      if (isTarget) { ctx.shadowColor = color; ctx.shadowBlur = 10; }
+      ctx.fillText(display, centerX, centerY);
+    }
+    ctx.shadowBlur = 0;
+
+    // Checkmark on learned
+    if (learned) {
+      ctx.fillStyle = color + 'aa';
+      ctx.font = 'bold 13px Courier New';
+      ctx.fillText('✓', centerX, y + boxH - 9);
+    }
+
+    // Animated arrow below target
+    if (isTarget) {
+      const bounce = Math.sin(Date.now() / 200) * 2;
+      ctx.fillStyle = color;
+      ctx.font = '11px Courier New';
+      ctx.fillText('▼', centerX, y + boxH - 8 + bounce);
+    }
+
+    ctx.restore();
+  }
 }
 
 // Progress bar showing 5 base letters with learned status
@@ -477,6 +554,8 @@ function draw() {
     ctx.fill();
   }
   ctx.globalAlpha = 1;
+
+  drawTopLetters();
 
   for (const fl of fallingLetters) drawFallingLetter(fl);
 
