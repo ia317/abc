@@ -574,5 +574,30 @@ document.addEventListener('keydown', e => {
 });
 document.addEventListener('keyup', e => { keys[e.key] = false; });
 
+// --- Mouse controls ---
+canvas.addEventListener('mousemove', e => {
+  if (state !== 'playing') return;
+  const rect = canvas.getBoundingClientRect();
+  const scaleX = canvas.width / rect.width;
+  player.x = Math.max(player.w / 2, Math.min(canvas.width - player.w / 2,
+    (e.clientX - rect.left) * scaleX));
+});
+
+canvas.addEventListener('mousedown', e => {
+  e.preventDefault();
+  if (state === 'menu' || state === 'dead' || state === 'win') {
+    overlay.style.display = 'none';
+    titleEl.style.color = '#0f0';
+    titleEl.style.textShadow = '0 0 20px #0f0';
+    initGame();
+    state = 'playing';
+    return;
+  }
+  if (state === 'playing' && shootCooldown <= 0) {
+    bullets.push({ x: player.x, y: player.y - player.h / 2, vy: -12 });
+    shootCooldown = 14;
+  }
+});
+
 initStars();
 loop();
