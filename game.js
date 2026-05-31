@@ -221,12 +221,25 @@ function drawFallingLetter(fl) {
 
 function drawBullet(b) {
   ctx.save();
-  ctx.fillStyle = '#ff0';
-  ctx.shadowColor = '#ff0';
-  ctx.shadowBlur = 10;
+  ctx.translate(b.x, b.y);
+  ctx.fillStyle = '#fffb7a';
+  ctx.shadowColor = '#fffb7a';
+  ctx.shadowBlur = 14;
   ctx.beginPath();
-  ctx.rect(b.x - 3, b.y - 8, 6, 16);
+  ctx.arc(0, 0, 7, 0, Math.PI * 2);
   ctx.fill();
+  ctx.strokeStyle = '#ffffff';
+  ctx.lineWidth = 2;
+  ctx.beginPath();
+  ctx.moveTo(-6, 0);
+  ctx.lineTo(6, 0);
+  ctx.moveTo(0, -6);
+  ctx.lineTo(0, 6);
+  ctx.moveTo(-4.2, -4.2);
+  ctx.lineTo(4.2, 4.2);
+  ctx.moveTo(-4.2, 4.2);
+  ctx.lineTo(4.2, -4.2);
+  ctx.stroke();
   ctx.restore();
 }
 
@@ -264,7 +277,7 @@ function drawTopLetters() {
   ctx.textBaseline = 'middle';
   ctx.fillStyle = '#888';
   ctx.font = 'bold 11px Courier New';
-  ctx.fillText('SHOOT', tx + tw / 2, ty + 13);
+  ctx.fillText('MATCH', tx + tw / 2, ty + 13);
 
   const display = round === 3
     ? `${targetLetter.toUpperCase()} ${targetLetter.toLowerCase()}`
@@ -432,7 +445,7 @@ function drawProgressBar() {
   ctx.textBaseline = 'middle';
   ctx.fillStyle = '#aaa';
   ctx.font = 'bold 13px Courier New';
-  ctx.fillText('SHOOT:', bx - 28, by);
+  ctx.fillText('MATCH:', bx - 28, by);
   ctx.fillStyle = '#fff';
   ctx.shadowColor = color;
   ctx.shadowBlur = 12;
