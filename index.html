@@ -9,79 +9,101 @@
     #outer { display: flex; gap: 10px; align-items: flex-start; }
     canvas { border: 1px solid #222; display: block; position: relative; cursor: none; }
     #group-panel {
-      width: 118px;
+      width: 130px;
       height: 600px;
-      background: rgba(0,0,0,0.9);
-      border: 1px solid #2a2a2a;
+      background: linear-gradient(180deg, #0e0e12 0%, #090909 100%);
+      border: 1px solid #1e1e2a;
+      border-radius: 8px;
       display: flex;
       flex-direction: column;
-      padding: 8px 6px;
+      padding: 10px 7px 8px;
       gap: 3px;
       overflow-y: auto;
+      box-shadow: 0 0 24px rgba(0,0,0,0.8);
+    }
+    #group-panel::-webkit-scrollbar { width: 4px; }
+    #group-panel::-webkit-scrollbar-track { background: transparent; }
+    #group-panel::-webkit-scrollbar-thumb { background: #2a2a3a; border-radius: 2px; }
+    .panel-title {
+      text-align: center;
+      font-size: 11px;
+      font-weight: bold;
+      letter-spacing: 3px;
+      color: #3a3a55;
+      padding: 4px 0 8px;
     }
     .panel-section {
-      color: #444;
+      color: #fff;
       font-size: 9px;
-      letter-spacing: 2px;
+      font-weight: bold;
+      letter-spacing: 3px;
       text-align: center;
-      padding: 5px 0 3px;
-      border-bottom: 1px solid #1e1e1e;
-      margin-bottom: 1px;
+      padding: 6px 0 4px;
+      margin: 4px 0 2px;
+      border-radius: 4px;
     }
+    .panel-section.caps  { background: rgba(0,255,80,0.07);  color: #2a8a4a; border: 1px solid #1a3a25; }
+    .panel-section.lower { background: rgba(64,170,255,0.07); color: #2a6a9a; border: 1px solid #1a2a3a; }
     .group-btn {
-      background: #0d0d0d;
-      border: 1px solid #2a2a2a;
-      color: #666;
+      background: #111118;
+      border: 1px solid #22223a;
+      color: #555;
       font-family: 'Courier New', monospace;
-      font-size: 12px;
+      font-size: 11px;
       font-weight: bold;
       padding: 7px 4px;
       cursor: pointer;
-      border-radius: 5px;
+      border-radius: 6px;
       text-align: center;
-      letter-spacing: 2px;
-      transition: background 0.1s, border-color 0.1s, color 0.1s;
+      letter-spacing: 1px;
+      transition: all 0.15s;
       width: 100%;
     }
-    .group-btn:hover { background: #181818; border-color: #555; color: #ccc; }
-    .group-btn.active { border-color: #0f0; color: #0f0; background: rgba(0,255,0,0.07); }
-    .group-btn.active.round2 { border-color: #4af; color: #4af; background: rgba(64,170,255,0.07); }
-    .group-btn.locked { color: #2a2a2a; border-color: #181818; background: #080808; cursor: not-allowed; font-size: 9px; letter-spacing: 1px; }
-    .group-btn.locked:hover { color: #2a2a2a; border-color: #181818; background: #080808; }
+    .group-btn:hover { background: #1a1a28; border-color: #666; color: #ccc; transform: translateX(1px); }
+    .group-btn.active { border-color: #0f0; color: #0f0; background: rgba(0,255,0,0.09); box-shadow: 0 0 8px rgba(0,255,0,0.2); }
+    .group-btn.active.round2 { border-color: #4af; color: #4af; background: rgba(64,170,255,0.09); box-shadow: 0 0 8px rgba(64,170,255,0.2); }
+    .group-btn.locked { color: #282838; border-color: #161622; background: #0a0a10; cursor: not-allowed; font-size: 9px; letter-spacing: 0; transform: none; }
+    .group-btn.locked:hover { background: #0a0a10; border-color: #161622; color: #282838; transform: none; }
     .review-btn {
-      background: #0a0800;
-      border: 1px solid #332200;
-      color: #554400;
+      background: #0c0b00;
+      border: 1px dashed #2a2000;
+      color: #3a3000;
       font-family: 'Courier New', monospace;
       font-size: 10px;
       font-weight: bold;
-      padding: 5px 4px;
+      padding: 4px 4px;
       cursor: not-allowed;
-      border-radius: 5px;
+      border-radius: 6px;
       text-align: center;
-      letter-spacing: 0px;
       width: 100%;
-      transition: background 0.1s, border-color 0.1s, color 0.1s;
+      transition: all 0.15s;
+      margin: 1px 0;
     }
-    .review-btn.unlocked { border-color: #aa7700; color: #ffcc00; background: rgba(255,200,0,0.06); cursor: pointer; }
-    .review-btn.unlocked:hover { border-color: #ff0; color: #ff0; background: rgba(255,255,0,0.1); }
+    .review-btn.unlocked {
+      border-color: #886600;
+      border-style: solid;
+      color: #ccaa00;
+      background: rgba(255,200,0,0.06);
+      cursor: pointer;
+    }
+    .review-btn.unlocked:hover { border-color: #ffdd00; color: #ffee44; background: rgba(255,220,0,0.12); transform: translateX(1px); }
     #reset-btn {
       margin-top: auto;
-      background: #0d0d0d;
-      border: 1px solid #3a1a1a;
-      color: #633;
+      background: transparent;
+      border: 1px solid #2a1010;
+      color: #442222;
       font-family: 'Courier New', monospace;
       font-size: 10px;
       font-weight: bold;
       padding: 7px 4px;
       cursor: pointer;
-      border-radius: 5px;
+      border-radius: 6px;
       text-align: center;
       letter-spacing: 1px;
       width: 100%;
-      transition: background 0.1s, border-color 0.1s, color 0.1s;
+      transition: all 0.15s;
     }
-    #reset-btn:hover { background: #1a0808; border-color: #f44; color: #f44; }
+    #reset-btn:hover { background: rgba(255,60,60,0.08); border-color: #f44; color: #f77; }
     #ui {
       position: absolute;
       top: 10px;
@@ -171,7 +193,7 @@
       </div>
       <button id="pause-btn" title="Pause (P)">⏸</button>
       <button id="mute-btn" title="Mute (M)">🔊</button>
-      <div id="version">v1.0.142</div>
+      <div id="version">v1.0.143</div>
     </div>
   </div>
   <script src="game.js"></script>
