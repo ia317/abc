@@ -172,6 +172,25 @@
     }
     #mute-btn:hover { border-color: #0f0; color: #0f0; }
     #mute-btn.muted { border-color: #f44; color: #f44; }
+    #canvas-reset-btn {
+      position: absolute;
+      top: 102px;
+      right: 10px;
+      width: 38px;
+      height: 38px;
+      background: rgba(0,0,0,0.7);
+      border: 1px solid #442222;
+      border-radius: 6px;
+      color: #733;
+      font-size: 18px;
+      cursor: pointer;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      z-index: 10;
+      transition: border-color 0.1s, color 0.1s;
+    }
+    #canvas-reset-btn:hover { border-color: #f44; color: #f44; }
   </style>
 </head>
 <body>
@@ -193,7 +212,7 @@
       </div>
       <button id="pause-btn" title="Pause (P)">⏸</button>
       <button id="mute-btn" title="Mute (M)">🔊</button>
-      <div id="version">v1.0.159</div>
+      <div id="version">v1.0.160</div>
     </div>
   </div>
   <script src="game.js"></script>
