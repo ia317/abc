@@ -48,6 +48,23 @@
     .group-btn.active.round2 { border-color: #4af; color: #4af; background: rgba(64,170,255,0.07); }
     .group-btn.locked { color: #2a2a2a; border-color: #181818; background: #080808; cursor: not-allowed; font-size: 9px; letter-spacing: 1px; }
     .group-btn.locked:hover { color: #2a2a2a; border-color: #181818; background: #080808; }
+    .review-btn {
+      background: #0a0800;
+      border: 1px solid #332200;
+      color: #554400;
+      font-family: 'Courier New', monospace;
+      font-size: 10px;
+      font-weight: bold;
+      padding: 5px 4px;
+      cursor: not-allowed;
+      border-radius: 5px;
+      text-align: center;
+      letter-spacing: 0px;
+      width: 100%;
+      transition: background 0.1s, border-color 0.1s, color 0.1s;
+    }
+    .review-btn.unlocked { border-color: #aa7700; color: #ffcc00; background: rgba(255,200,0,0.06); cursor: pointer; }
+    .review-btn.unlocked:hover { border-color: #ff0; color: #ff0; background: rgba(255,255,0,0.1); }
     #reset-btn {
       margin-top: auto;
       background: #0d0d0d;
@@ -154,7 +171,7 @@
       </div>
       <button id="pause-btn" title="Pause (P)">⏸</button>
       <button id="mute-btn" title="Mute (M)">🔊</button>
-      <div id="version">v1.0.140</div>
+      <div id="version">v1.0.141</div>
     </div>
   </div>
   <script src="game.js"></script>
