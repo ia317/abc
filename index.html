@@ -5,8 +5,47 @@
   <title>ABC Fun</title>
   <style>
     * { margin: 0; padding: 0; box-sizing: border-box; }
-    body { background: #000; display: flex; flex-direction: column; align-items: center; justify-content: center; height: 100vh; font-family: 'Courier New', monospace; color: #fff; overflow: hidden; }
+    body { background: #000; display: flex; align-items: center; justify-content: center; height: 100vh; font-family: 'Courier New', monospace; color: #fff; overflow: hidden; }
+    #outer { display: flex; gap: 10px; align-items: flex-start; }
     canvas { border: 1px solid #222; display: block; position: relative; cursor: none; }
+    #group-panel {
+      width: 118px;
+      height: 600px;
+      background: rgba(0,0,0,0.9);
+      border: 1px solid #2a2a2a;
+      display: flex;
+      flex-direction: column;
+      padding: 8px 6px;
+      gap: 3px;
+      overflow-y: auto;
+    }
+    .panel-section {
+      color: #444;
+      font-size: 9px;
+      letter-spacing: 2px;
+      text-align: center;
+      padding: 5px 0 3px;
+      border-bottom: 1px solid #1e1e1e;
+      margin-bottom: 1px;
+    }
+    .group-btn {
+      background: #0d0d0d;
+      border: 1px solid #2a2a2a;
+      color: #666;
+      font-family: 'Courier New', monospace;
+      font-size: 12px;
+      font-weight: bold;
+      padding: 7px 4px;
+      cursor: pointer;
+      border-radius: 5px;
+      text-align: center;
+      letter-spacing: 2px;
+      transition: background 0.1s, border-color 0.1s, color 0.1s;
+      width: 100%;
+    }
+    .group-btn:hover { background: #181818; border-color: #555; color: #ccc; }
+    .group-btn.active { border-color: #0f0; color: #0f0; background: rgba(0,255,0,0.07); }
+    .group-btn.active.round2 { border-color: #4af; color: #4af; background: rgba(64,170,255,0.07); }
     #ui {
       position: absolute;
       top: 10px;
@@ -38,21 +77,24 @@
   </style>
 </head>
 <body>
-  <div id="wrapper">
-    <canvas id="game"></canvas>
-    <div id="ui">
-      <span>SCORE <b id="score">0</b></span>
-      <span>LIVES <b id="lives">3</b></span>
-      <span>GROUP <b id="wave">1</b></span>
+  <div id="outer">
+    <div id="group-panel"></div>
+    <div id="wrapper">
+      <canvas id="game"></canvas>
+      <div id="ui">
+        <span>SCORE <b id="score">0</b></span>
+        <span>LIVES <b id="lives">3</b></span>
+        <span>GROUP <b id="wave">1</b></span>
+      </div>
+      <div id="overlay">
+        <h1 id="title">ABC FUN</h1>
+        <p class="sub" id="subtitle">Match the glowing letter shown at the bottom!</p>
+        <p class="hint">â† â†’ to move &nbsp;|&nbsp; SPACE to launch</p>
+        <br>
+        <p class="sub" style="color:#0f0">Press SPACE to Start</p>
+      </div>
+      <div id="version">v1.0.32</div>
     </div>
-    <div id="overlay">
-      <h1 id="title">ABC FUN</h1>
-      <p class="sub" id="subtitle">Match the glowing letter shown at the bottom!</p>
-      <p class="hint">â† â†’ to move &nbsp;|&nbsp; SPACE to launch</p>
-      <br>
-      <p class="sub" style="color:#0f0">Press SPACE to Start</p>
-    </div>
-    <div id="version">v1.0.31</div>
   </div>
   <script src="game.js"></script>
 </body>
