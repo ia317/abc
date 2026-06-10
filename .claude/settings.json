@@ -6,13 +6,18 @@
         "hooks": [
           {
             "type": "command",
-            "command": "powershell -File \"c:\\Users\\idana\\Documents\\abc\\bump-version.ps1\"",
+            "command": "Set-Location 'C:\\Users\\idana\\Documents\\abc'; git add game.js index.html 2>$null; & 'C:\\Users\\idana\\Documents\\abc\\bump-version.ps1'",
             "shell": "powershell",
-            "timeout": 30,
-            "statusMessage": "Bumping version and committing..."
+            "timeout": 60,
+            "statusMessage": "Bumping version and pushing..."
           }
         ]
       }
+    ]
+  },
+  "permissions": {
+    "allow": [
+      "Bash(start \"c:\\\\Users\\\\idana\\\\Documents\\\\abc\\\\index.html\")"
     ]
   }
 }
