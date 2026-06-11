@@ -1567,7 +1567,7 @@ function saveProgress() {
   } catch(e) {}
 }
 
-function loadAndResume() {
+function loadAndResume(skipIntro = false) {
   try {
     const raw = localStorage.getItem(saveKey());
     if (!raw) return false;
@@ -1594,7 +1594,12 @@ function loadAndResume() {
     bullets = []; particles = []; fallingLetters = [];
     overlay.style.display = 'none';
 
-    showTargetLetter();
+    if (skipIntro) {
+      state = 'playing';
+      spawnTimer = spawnInterval;
+    } else {
+      showTargetLetter();
+    }
     updatePanelActive();
     updatePanelLocks();
     return true;
@@ -1668,7 +1673,8 @@ function switchUser(name) {
   updateUserBtn();
   closeUserPanel();
   fallingLetters = []; bullets = []; particles = [];
-  if (!loadAndResume()) {
+  paused = false;
+  if (!loadAndResume(true)) {
     state = 'menu';
     overlay.style.display = 'block';
     document.getElementById('title').textContent = 'ABC FUN';
