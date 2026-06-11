@@ -225,11 +225,13 @@ function spawnReviewLetter() {
     const pool = reviewQueue.filter(l => l !== target);
     if (pool.length > 0) letter = pool[Math.floor(Math.random() * pool.length)];
   }
+  const sx = findSpawnX(70);
+  if (sx === null) return;
   fallingLetters.push({
     letter,
-    x: 50 + Math.random() * (canvas.width - 100),
+    x: sx,
     y: 70,
-    speed: 0.3 + Math.random() * 0.1,
+    speed: 0.9 + Math.random() * 0.1,
     wobble: Math.random() * Math.PI * 2,
     wobbleSpeed: (Math.random() - 0.5) * 0.03,
   });
@@ -289,6 +291,19 @@ function initStars() {
   }));
 }
 
+function findSpawnX(spawnY) {
+  const minDist = 48;
+  for (let attempt = 0; attempt < 10; attempt++) {
+    const x = 50 + Math.random() * (canvas.width - 100);
+    const clear = fallingLetters.every(fl => {
+      const dx = fl.x - x, dy = fl.y - spawnY;
+      return Math.sqrt(dx * dx + dy * dy) >= minDist;
+    });
+    if (clear) return x;
+  }
+  return null;
+}
+
 function spawnLetter() {
   const g = currentGroup();
   let letter;
@@ -302,11 +317,13 @@ function spawnLetter() {
       : BASE_GROUPS[groupIdx][Math.floor(Math.random() * BASE_GROUPS[groupIdx].length)];
     letter = Math.random() < 0.5 ? base : base.toLowerCase();
   }
+  const sx = findSpawnX(70);
+  if (sx === null) return;
   fallingLetters.push({
     letter,
-    x: 50 + Math.random() * (canvas.width - 100),
+    x: sx,
     y: 70,
-    speed: 0.3 + Math.random() * 0.1,
+    speed: 0.9 + Math.random() * 0.1,
     wobble: 0,
     wobbleSpeed: 0,
   });
