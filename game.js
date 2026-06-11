@@ -1707,6 +1707,10 @@ document.addEventListener('click', e => {
   const btn = document.getElementById('user-btn');
   if (panel && panel.style.display === 'block' && !panel.contains(e.target) && e.target !== btn) closeUserPanel();
 });
+document.getElementById('add-player-btn').addEventListener('click', () => {
+  const name = prompt('New player name:');
+  if (name && name.trim()) addUser(name.trim().slice(0, 16));
+});
 
 buildGroupPanel();
 initUsers();
