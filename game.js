@@ -1688,24 +1688,38 @@ function renameUser(oldName, newName) {
 function startInlineRename(name) {
   const slots = document.getElementById('player-slots');
   if (!slots) return;
-  const btns = slots.querySelectorAll('.player-slot');
+  const btns = [...slots.querySelectorAll('.player-slot')];
   const users = getUsers();
-  btns.forEach((btn, i) => {
-    if (users[i] !== name) return;
-    const inp = document.createElement('input');
-    inp.value = name;
-    inp.maxLength = 16;
-    inp.className = 'player-slot player-rename-input';
-    inp.style.cssText = 'width:38px;height:38px;text-align:center;padding:0 2px;font-size:11px;';
-    inp.onkeydown = e => {
-      e.stopPropagation();
-      if (e.key === 'Enter') { renameUser(name, inp.value); }
-      if (e.key === 'Escape') { renderPlayerColumn(); }
-    };
-    inp.onblur = () => { renameUser(name, inp.value); };
-    btn.replaceWith(inp);
-    inp.focus(); inp.select();
-  });
+  const idx = users.indexOf(name);
+  if (idx < 0) return;
+  const btn = btns[idx];
+  if (!btn) return;
+
+  const wrap = document.createElement('div');
+  wrap.style.cssText = 'display:flex;align-items:center;gap:3px;';
+
+  const inp = document.createElement('input');
+  inp.value = name;
+  inp.maxLength = 16;
+  inp.className = 'player-rename-input';
+  inp.style.cssText = 'width:80px;height:38px;text-align:left;padding:0 6px;font-size:12px;box-sizing:border-box;';
+
+  const ok = document.createElement('button');
+  ok.textContent = '✓';
+  ok.style.cssText = 'width:24px;height:38px;background:rgba(0,200,0,0.15);border:1px solid #0a4;border-radius:5px;color:#0f0;font-size:14px;cursor:pointer;flex-shrink:0;';
+
+  const confirm = () => { renameUser(name, inp.value); };
+  ok.onclick = confirm;
+  inp.onkeydown = e => {
+    e.stopPropagation();
+    if (e.key === 'Enter') confirm();
+    if (e.key === 'Escape') renderPlayerColumn();
+  };
+
+  wrap.appendChild(inp);
+  wrap.appendChild(ok);
+  btn.replaceWith(wrap);
+  inp.focus(); inp.select();
 }
 function showPlayerCtxMenu(x, y, name) {
   const menu = document.getElementById('player-ctx-menu');
