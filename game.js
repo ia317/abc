@@ -1617,53 +1617,29 @@ function initUsers() {
   try { localStorage.setItem('abcfun_current_user', currentUser); } catch(e) {}
   updateUserBtn();
 }
-function updateUserBtn() {
-  const btn = document.getElementById('user-btn');
-  if (!btn) return;
-  btn.textContent = currentUser.charAt(0).toUpperCase();
-  btn.title = currentUser;
-}
-function renderUserPanel() {
-  const list = document.getElementById('user-list');
-  if (!list) return;
+function renderPlayerColumn() {
+  const slots = document.getElementById('player-slots');
+  if (!slots) return;
   const users = getUsers();
-  list.innerHTML = '';
+  slots.innerHTML = '';
   users.forEach(name => {
-    const row = document.createElement('div');
-    row.className = 'up-row' + (name === currentUser ? ' up-current' : '');
-    const nameSpan = document.createElement('span');
-    nameSpan.textContent = (name === currentUser ? '● ' : '○ ') + name;
-    if (name !== currentUser) nameSpan.style.cursor = 'pointer';
-    if (name !== currentUser) nameSpan.onclick = () => switchUser(name);
-    row.appendChild(nameSpan);
-    if (users.length > 1) {
-      const del = document.createElement('button');
-      del.className = 'up-del';
-      del.textContent = '×';
-      del.title = 'Delete ' + name;
-      del.onclick = e => { e.stopPropagation(); if (confirm('Delete ' + name + '?')) deleteUser(name); };
-      row.appendChild(del);
-    }
-    list.appendChild(row);
+    const btn = document.createElement('button');
+    btn.className = 'player-slot' + (name === currentUser ? ' active' : '');
+    btn.textContent = name.slice(0, 4);
+    btn.title = name;
+    btn.onclick = () => { if (name !== currentUser) switchUser(name); };
+    slots.appendChild(btn);
   });
 }
-function openUserPanel() {
-  renderUserPanel();
-  const panel = document.getElementById('user-panel');
-  if (panel) { panel.style.display = 'block'; }
-  const inp = document.getElementById('new-user-input');
-  if (inp) inp.value = '';
-}
-function closeUserPanel() {
-  const panel = document.getElementById('user-panel');
-  if (panel) panel.style.display = 'none';
-}
+function updateUserBtn() { renderPlayerColumn(); }
+function openUserPanel() {}
+function closeUserPanel() {}
+
 function switchUser(name) {
   saveProgress();
   currentUser = name;
   try { localStorage.setItem('abcfun_current_user', name); } catch(e) {}
-  updateUserBtn();
-  closeUserPanel();
+  renderPlayerColumn();
   fallingLetters = []; bullets = []; particles = [];
   paused = false;
   if (!loadAndResume(true)) {
@@ -1687,26 +1663,9 @@ function deleteUser(name) {
   saveUsers(users);
   try { localStorage.removeItem('abcfun_save_' + name); } catch(e) {}
   if (currentUser === name) switchUser(users[0]);
-  else renderUserPanel();
+  else renderPlayerColumn();
 }
 
-document.getElementById('user-btn').addEventListener('click', () => {
-  const panel = document.getElementById('user-panel');
-  if (!panel.style.display || panel.style.display === 'none') openUserPanel();
-  else closeUserPanel();
-});
-document.getElementById('add-user-confirm').addEventListener('click', () => {
-  addUser(document.getElementById('new-user-input').value);
-});
-document.getElementById('new-user-input').addEventListener('keydown', e => {
-  e.stopPropagation();
-  if (e.key === 'Enter') addUser(e.target.value);
-});
-document.addEventListener('click', e => {
-  const panel = document.getElementById('user-panel');
-  const btn = document.getElementById('user-btn');
-  if (panel && panel.style.display === 'block' && !panel.contains(e.target) && e.target !== btn) closeUserPanel();
-});
 document.getElementById('add-player-btn').addEventListener('click', () => {
   const users = getUsers();
   const nums = users.map(u => { const m = u.match(/^P(\d+)$/); return m ? parseInt(m[1]) : 0; });

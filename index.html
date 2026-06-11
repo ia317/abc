@@ -191,31 +191,36 @@
       transition: border-color 0.1s, color 0.1s;
     }
     #canvas-reset-btn:hover { border-color: #f44; color: #f44; }
-    #user-btn {
+    #player-column {
       position: absolute;
       top: 148px;
       right: 10px;
+      display: flex;
+      flex-direction: column;
+      gap: 6px;
+      z-index: 10;
+      align-items: center;
+    }
+    .player-slot {
       width: 38px;
       height: 38px;
       background: rgba(0,0,0,0.7);
-      border: 1px solid #446;
+      border: 1px solid #444;
       border-radius: 6px;
-      color: #88f;
-      font-size: 15px;
+      color: #aaa;
+      font-size: 13px;
       font-family: 'Courier New', monospace;
       font-weight: bold;
       cursor: pointer;
       display: flex;
       align-items: center;
       justify-content: center;
-      z-index: 10;
       transition: border-color 0.1s, color 0.1s;
+      user-select: none;
     }
-    #user-btn:hover { border-color: #88f; color: #ccf; }
+    .player-slot:hover { border-color: #88f; color: #ccf; }
+    .player-slot.active { border-color: #0f0; color: #0f0; background: rgba(0,255,0,0.07); box-shadow: 0 0 8px rgba(0,255,0,0.2); }
     #add-player-btn {
-      position: absolute;
-      top: 194px;
-      right: 10px;
       width: 38px;
       height: 38px;
       background: rgba(0,0,0,0.7);
@@ -228,36 +233,10 @@
       display: flex;
       align-items: center;
       justify-content: center;
-      z-index: 10;
       transition: border-color 0.1s, color 0.1s;
       line-height: 1;
     }
     #add-player-btn:hover { border-color: #0f0; color: #0f0; }
-    #user-panel {
-      display: none;
-      position: absolute;
-      top: 148px;
-      right: 56px;
-      background: rgba(8,8,14,0.97);
-      border: 1px solid #334;
-      border-radius: 8px;
-      padding: 8px;
-      min-width: 160px;
-      z-index: 20;
-      box-shadow: 0 4px 24px rgba(0,0,0,0.9);
-    }
-    .up-title { font-size: 9px; letter-spacing: 3px; color: #446; padding: 2px 4px 8px; text-align: center; }
-    .up-row { display: flex; align-items: center; justify-content: space-between; padding: 5px 6px; border-radius: 5px; font-size: 12px; color: #778; gap: 6px; }
-    .up-row:not(.up-current):hover { background: rgba(255,255,255,0.04); color: #aac; cursor: pointer; }
-    .up-row.up-current { color: #88f; }
-    .up-row span { flex: 1; }
-    .up-del { background: transparent; border: none; color: #332; font-size: 14px; cursor: pointer; padding: 0 2px; line-height: 1; }
-    .up-del:hover { color: #f44; }
-    #add-user-row { display: flex; gap: 4px; margin-top: 8px; border-top: 1px solid #223; padding-top: 8px; }
-    #new-user-input { flex: 1; background: #0e0e16; border: 1px solid #334; border-radius: 4px; color: #ccc; font-family: 'Courier New', monospace; font-size: 11px; padding: 4px 6px; outline: none; min-width: 0; }
-    #new-user-input:focus { border-color: #88f; }
-    #add-user-confirm { background: rgba(100,100,255,0.12); border: 1px solid #446; border-radius: 4px; color: #88f; font-size: 16px; font-weight: bold; cursor: pointer; padding: 0 8px; }
-    #add-user-confirm:hover { background: rgba(100,100,255,0.25); }
   </style>
 </head>
 <body>
@@ -280,15 +259,9 @@
       <button id="pause-btn" title="Pause (P)">⏸</button>
       <button id="mute-btn" title="Mute (M)">🔊</button>
       <button id="canvas-reset-btn" title="Reset to beginning">↺</button>
-      <button id="user-btn" title="Switch Player">P</button>
-      <button id="add-player-btn" title="Add new player">+</button>
-      <div id="user-panel">
-        <div class="up-title">PLAYERS</div>
-        <div id="user-list"></div>
-        <div id="add-user-row">
-          <input id="new-user-input" placeholder="New player…" maxlength="16" />
-          <button id="add-user-confirm">+</button>
-        </div>
+      <div id="player-column">
+        <div id="player-slots"></div>
+        <button id="add-player-btn" title="Add new player">+</button>
       </div>
       <div id="version">v1.0.162</div>
     </div>
