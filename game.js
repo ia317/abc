@@ -1631,7 +1631,7 @@ function renderPlayerColumn() {
     btn.oncontextmenu = e => {
       e.preventDefault();
       if (getUsers().length <= 1) return;
-      if (confirm('Delete player ' + name + '?')) deleteUser(name);
+      showPlayerCtxMenu(e.clientX, e.clientY, name);
     };
     slots.appendChild(btn);
   });
@@ -1670,6 +1670,22 @@ function deleteUser(name) {
   if (currentUser === name) switchUser(users[0]);
   else renderPlayerColumn();
 }
+
+function showPlayerCtxMenu(x, y, name) {
+  const menu = document.getElementById('player-ctx-menu');
+  document.getElementById('ctx-player-name').textContent = name;
+  document.getElementById('ctx-erase-btn').onclick = () => { hidePlayerCtxMenu(); deleteUser(name); };
+  menu.style.left = Math.min(x, window.innerWidth - 160) + 'px';
+  menu.style.top = y + 'px';
+  menu.style.display = 'block';
+}
+function hidePlayerCtxMenu() {
+  document.getElementById('player-ctx-menu').style.display = 'none';
+}
+document.addEventListener('click', () => hidePlayerCtxMenu());
+document.addEventListener('contextmenu', e => {
+  if (!e.target.closest('#player-slots')) hidePlayerCtxMenu();
+});
 
 document.getElementById('add-player-btn').addEventListener('click', () => {
   const users = getUsers();
