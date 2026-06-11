@@ -225,7 +225,7 @@ function spawnReviewLetter() {
     const pool = reviewQueue.filter(l => l !== target);
     if (pool.length > 0) letter = pool[Math.floor(Math.random() * pool.length)];
   }
-  const sx = findSpawnX(70);
+  const sx = findSpawnX();
   if (sx === null) return;
   fallingLetters.push({
     letter,
@@ -291,14 +291,11 @@ function initStars() {
   }));
 }
 
-function findSpawnX(spawnY) {
-  const minDist = 48;
-  for (let attempt = 0; attempt < 10; attempt++) {
+function findSpawnX() {
+  const minXDist = 48;
+  for (let attempt = 0; attempt < 15; attempt++) {
     const x = 50 + Math.random() * (canvas.width - 100);
-    const clear = fallingLetters.every(fl => {
-      const dx = fl.x - x, dy = fl.y - spawnY;
-      return Math.sqrt(dx * dx + dy * dy) >= minDist;
-    });
+    const clear = fallingLetters.every(fl => Math.abs(fl.x - x) >= minXDist);
     if (clear) return x;
   }
   return null;
@@ -317,7 +314,7 @@ function spawnLetter() {
       : BASE_GROUPS[groupIdx][Math.floor(Math.random() * BASE_GROUPS[groupIdx].length)];
     letter = Math.random() < 0.5 ? base : base.toLowerCase();
   }
-  const sx = findSpawnX(70);
+  const sx = findSpawnX();
   if (sx === null) return;
   fallingLetters.push({
     letter,
