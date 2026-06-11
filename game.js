@@ -1685,16 +1685,36 @@ function renameUser(oldName, newName) {
   if (currentUser === oldName) { currentUser = newName; try { localStorage.setItem('abcfun_current_user', newName); } catch(e) {} }
   renderPlayerColumn();
 }
+function startInlineRename(name) {
+  const slots = document.getElementById('player-slots');
+  if (!slots) return;
+  const btns = slots.querySelectorAll('.player-slot');
+  const users = getUsers();
+  btns.forEach((btn, i) => {
+    if (users[i] !== name) return;
+    const inp = document.createElement('input');
+    inp.value = name;
+    inp.maxLength = 16;
+    inp.className = 'player-slot player-rename-input';
+    inp.style.cssText = 'width:38px;height:38px;text-align:center;padding:0 2px;font-size:11px;';
+    inp.onkeydown = e => {
+      e.stopPropagation();
+      if (e.key === 'Enter') { renameUser(name, inp.value); }
+      if (e.key === 'Escape') { renderPlayerColumn(); }
+    };
+    inp.onblur = () => { renameUser(name, inp.value); };
+    btn.replaceWith(inp);
+    inp.focus(); inp.select();
+  });
+}
 function showPlayerCtxMenu(x, y, name) {
   const menu = document.getElementById('player-ctx-menu');
   const renameRow = document.getElementById('ctx-rename-row');
   renameRow.classList.remove('visible');
   document.getElementById('ctx-player-name').textContent = name;
   document.getElementById('ctx-rename-btn').onclick = () => {
-    renameRow.classList.add('visible');
-    const inp = document.getElementById('ctx-rename-input');
-    inp.value = name;
-    inp.focus(); inp.select();
+    hidePlayerCtxMenu();
+    startInlineRename(name);
   };
   document.getElementById('ctx-rename-confirm').onclick = () => {
     renameUser(name, document.getElementById('ctx-rename-input').value);
