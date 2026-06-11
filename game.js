@@ -384,7 +384,7 @@ function drawShip(x, y, w, h, alpha) {
 }
 
 function drawFallingLetter(fl) {
-  const color = letterColor(fl.letter);
+  const color = '#ffffff';
   const base = BASE_GROUPS[groupIdx];
   const idx = base.indexOf(fl.letter.toUpperCase());
   const isLearned = idx >= 0 && learnedFlags[idx];
