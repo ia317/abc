@@ -1166,18 +1166,16 @@ function drawReviewGame() {
     const py = stripY + 5;
 
     // Cell background
-    ctx.fillStyle = isDone ? lColor + '28' : isCurrent ? lColor + '18' : '#111';
-    ctx.strokeStyle = isDone ? lColor : isCurrent ? lColor : '#2a2a2a';
-    ctx.lineWidth = isCurrent ? 2 : 1;
-    if (isCurrent) ctx.shadowColor = lColor, ctx.shadowBlur = 8 + pulse * 6;
+    ctx.fillStyle = isDone ? lColor + '28' : '#111';
+    ctx.strokeStyle = isDone ? lColor : '#2a2a2a';
+    ctx.lineWidth = 1;
     ctx.beginPath(); ctx.roundRect(px + 1, py, cellW - 2, cellH, 4);
     ctx.fill(); ctx.stroke();
-    ctx.shadowBlur = 0;
 
-    // Letter (phase 2 current = hidden)
+    // Letter (phase 2 non-done = hidden)
     ctx.textAlign = 'center'; ctx.textBaseline = 'middle';
     const showLetter = !(reviewPhase === 2 && !isDone);
-    ctx.fillStyle = isDone ? lColor : isCurrent ? '#fff' : '#333';
+    ctx.fillStyle = isDone ? lColor : '#555';
     ctx.font = `bold ${Math.round(cellW * 0.52)}px Courier New`;
     ctx.fillText(showLetter ? l : '?', px + cellW / 2, py + cellH / 2 - (isDone ? 4 : 0));
 
