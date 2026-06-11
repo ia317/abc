@@ -1713,7 +1713,9 @@ function showPlayerCtxMenu(x, y, name) {
 function hidePlayerCtxMenu() {
   document.getElementById('player-ctx-menu').style.display = 'none';
 }
-document.addEventListener('click', () => hidePlayerCtxMenu());
+document.addEventListener('click', e => {
+  if (!e.target.closest('#player-ctx-menu')) hidePlayerCtxMenu();
+});
 document.addEventListener('contextmenu', e => {
   if (!e.target.closest('#player-slots')) hidePlayerCtxMenu();
 });
