@@ -1362,6 +1362,7 @@ function loop() {
 }
 
 document.addEventListener('keydown', e => {
+  if (e.target.tagName === 'INPUT') return;
   keys[e.key] = true;
   if (e.key === ' ') e.preventDefault();
   if (e.key === 'p' || e.key === 'P' || e.key === 'Escape') { togglePause(); return; }
@@ -1375,7 +1376,7 @@ document.addEventListener('keydown', e => {
     initGame(); // initGroup() inside sets state = 'intro'
   }
 });
-document.addEventListener('keyup', e => { keys[e.key] = false; });
+document.addEventListener('keyup', e => { if (e.target.tagName !== 'INPUT') keys[e.key] = false; });
 
 // --- Mouse controls ---
 canvas.addEventListener('mousemove', e => {
