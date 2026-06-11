@@ -1671,11 +1671,42 @@ function deleteUser(name) {
   else renderPlayerColumn();
 }
 
+function renameUser(oldName, newName) {
+  newName = newName.trim().slice(0, 16);
+  if (!newName || newName === oldName) return;
+  const users = getUsers();
+  if (users.includes(newName)) return;
+  const idx = users.indexOf(oldName);
+  if (idx < 0) return;
+  users[idx] = newName;
+  saveUsers(users);
+  const save = localStorage.getItem('abcfun_save_' + oldName);
+  if (save) try { localStorage.setItem('abcfun_save_' + newName, save); localStorage.removeItem('abcfun_save_' + oldName); } catch(e) {}
+  if (currentUser === oldName) { currentUser = newName; try { localStorage.setItem('abcfun_current_user', newName); } catch(e) {} }
+  renderPlayerColumn();
+}
 function showPlayerCtxMenu(x, y, name) {
   const menu = document.getElementById('player-ctx-menu');
+  const renameRow = document.getElementById('ctx-rename-row');
+  renameRow.classList.remove('visible');
   document.getElementById('ctx-player-name').textContent = name;
+  document.getElementById('ctx-rename-btn').onclick = () => {
+    renameRow.classList.add('visible');
+    const inp = document.getElementById('ctx-rename-input');
+    inp.value = name;
+    inp.focus(); inp.select();
+  };
+  document.getElementById('ctx-rename-confirm').onclick = () => {
+    renameUser(name, document.getElementById('ctx-rename-input').value);
+    hidePlayerCtxMenu();
+  };
+  document.getElementById('ctx-rename-input').onkeydown = e => {
+    e.stopPropagation();
+    if (e.key === 'Enter') { renameUser(name, e.target.value); hidePlayerCtxMenu(); }
+    if (e.key === 'Escape') hidePlayerCtxMenu();
+  };
   document.getElementById('ctx-erase-btn').onclick = () => { hidePlayerCtxMenu(); deleteUser(name); };
-  menu.style.left = Math.min(x, window.innerWidth - 160) + 'px';
+  menu.style.left = Math.min(x, window.innerWidth - 170) + 'px';
   menu.style.top = y + 'px';
   menu.style.display = 'block';
 }

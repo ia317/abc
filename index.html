@@ -262,14 +262,22 @@
       width: 100%;
       background: transparent;
       border: none;
-      color: #f66;
       font-family: 'Courier New', monospace;
       font-size: 12px;
       padding: 8px 12px;
       text-align: left;
       cursor: pointer;
     }
-    #player-ctx-menu button:hover { background: rgba(255,60,60,0.12); color: #f99; }
+    #ctx-rename-btn { color: #8cf; }
+    #ctx-rename-btn:hover { background: rgba(80,160,255,0.12); color: #adf; }
+    #ctx-erase-btn { color: #f66; }
+    #ctx-erase-btn:hover { background: rgba(255,60,60,0.12); color: #f99; }
+    #ctx-rename-row { display: none; padding: 6px 10px 8px; gap: 5px; flex-direction: column; }
+    #ctx-rename-row.visible { display: flex; }
+    #ctx-rename-input { background: #0e0e16; border: 1px solid #446; border-radius: 4px; color: #ccc; font-family: 'Courier New', monospace; font-size: 12px; padding: 5px 7px; outline: none; width: 100%; }
+    #ctx-rename-input:focus { border-color: #8cf; }
+    #ctx-rename-confirm { background: rgba(80,160,255,0.15); border: 1px solid #446; border-radius: 4px; color: #8cf; font-family: 'Courier New', monospace; font-size: 11px; padding: 4px 8px; cursor: pointer; align-self: flex-end; }
+    #ctx-rename-confirm:hover { background: rgba(80,160,255,0.3); }
   </style>
 </head>
 <body>
@@ -298,7 +306,12 @@
       </div>
       <div id="player-ctx-menu">
         <div class="ctx-label" id="ctx-player-name"></div>
+        <button id="ctx-rename-btn">✎ Rename</button>
         <button id="ctx-erase-btn">⊘ Erase player</button>
+        <div id="ctx-rename-row">
+          <input id="ctx-rename-input" maxlength="16" placeholder="New name…" />
+          <button id="ctx-rename-confirm">Save</button>
+        </div>
       </div>
       <div id="version">v1.0.162</div>
     </div>
