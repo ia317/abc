@@ -225,6 +225,14 @@ function spawnReviewLetter() {
     const pool = reviewQueue.filter(l => l !== target);
     if (pool.length > 0) letter = pool[Math.floor(Math.random() * pool.length)];
   }
+  if (letter === target) {
+    const onScreen = fallingLetters.filter(fl => fl.letter === target).length;
+    if (onScreen >= 4) {
+      const pool = reviewQueue.filter(l => l !== target);
+      if (pool.length > 0) letter = pool[Math.floor(Math.random() * pool.length)];
+      else return;
+    }
+  }
   const sx = findSpawnX();
   if (sx === null) return;
   fallingLetters.push({
@@ -304,15 +312,28 @@ function findSpawnX() {
 function spawnLetter() {
   const g = currentGroup();
   let letter;
+  const targetOnScreen = fallingLetters.filter(fl => fl.letter.toUpperCase() === targetLetter.toUpperCase()).length;
+  const atCap = targetOnScreen >= 4;
   if (round < 3) {
-    // 55% chance to spawn the target, else any group letter
-    letter = Math.random() < 0.25 ? targetLetter : g[Math.floor(Math.random() * g.length)];
+    letter = (!atCap && Math.random() < 0.25)
+      ? targetLetter
+      : g[Math.floor(Math.random() * g.length)];
+    if (atCap && letter.toUpperCase() === targetLetter.toUpperCase()) {
+      const others = g.filter(l => l.toUpperCase() !== targetLetter.toUpperCase());
+      if (others.length) letter = others[Math.floor(Math.random() * others.length)];
+    }
   } else {
-    // Round 3: spawn target letter (either case, 50/50) or random group letter in random case
-    const base = Math.random() < 0.25
+    const base = (!atCap && Math.random() < 0.25)
       ? targetLetter.toUpperCase()
       : BASE_GROUPS[groupIdx][Math.floor(Math.random() * BASE_GROUPS[groupIdx].length)];
     letter = Math.random() < 0.5 ? base : base.toLowerCase();
+    if (atCap && letter.toUpperCase() === targetLetter.toUpperCase()) {
+      const others = BASE_GROUPS[groupIdx].filter(l => l.toUpperCase() !== targetLetter.toUpperCase());
+      if (others.length) {
+        const nb = others[Math.floor(Math.random() * others.length)];
+        letter = Math.random() < 0.5 ? nb : nb.toLowerCase();
+      }
+    }
   }
   const sx = findSpawnX();
   if (sx === null) return;
