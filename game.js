@@ -34,6 +34,7 @@ function letterColor(l) { return LETTER_COLORS[l.toUpperCase()]; }
 
 // --- State ---
 let state = 'menu';
+let currentUser = 'Player 1';
 let score = 0, lives = 3;
 let round = 1;      // 1, 2, 3
 let groupIdx = 0;
@@ -1424,7 +1425,7 @@ function unlockGroup(gIdx, r) {
 function resetProgress() {
   unlockedUpTo    = { 1: 0, 2: -1, 3: -1 };
   unlockedReviews = { 1: [], 2: [], 3: [] };
-  try { localStorage.removeItem('abcfun_save'); } catch(e) {}
+  try { localStorage.removeItem(saveKey()); } catch(e) {}
   updatePanelLocks();
   jumpToGroup(0, 1);
 }
@@ -1553,9 +1554,11 @@ function buildGroupPanel() {
 }
 
 // --- Persistence ---
+function saveKey() { return 'abcfun_save_' + currentUser; }
+
 function saveProgress() {
   try {
-    localStorage.setItem('abcfun_save', JSON.stringify({
+    localStorage.setItem(saveKey(), JSON.stringify({
       groupIdx, round, score,
       unlockedUpTo, unlockedReviews,
       learnedFlags: [...learnedFlags],
@@ -1566,7 +1569,7 @@ function saveProgress() {
 
 function loadAndResume() {
   try {
-    const raw = localStorage.getItem('abcfun_save');
+    const raw = localStorage.getItem(saveKey());
     if (!raw) return false;
     const d = JSON.parse(raw);
     groupIdx    = d.groupIdx    ?? 0;
@@ -1598,7 +1601,117 @@ function loadAndResume() {
   } catch(e) { return false; }
 }
 
+// --- Multi-user ---
+function getUsers() {
+  try { return JSON.parse(localStorage.getItem('abcfun_users')) || ['Player 1']; } catch(e) { return ['Player 1']; }
+}
+function saveUsers(list) {
+  try { localStorage.setItem('abcfun_users', JSON.stringify(list)); } catch(e) {}
+}
+function initUsers() {
+  if (!localStorage.getItem('abcfun_users')) {
+    const old = localStorage.getItem('abcfun_save');
+    if (old) try { localStorage.setItem('abcfun_save_Player 1', old); } catch(e) {}
+    saveUsers(['Player 1']);
+  }
+  const saved = localStorage.getItem('abcfun_current_user');
+  const users = getUsers();
+  currentUser = (saved && users.includes(saved)) ? saved : users[0];
+  try { localStorage.setItem('abcfun_current_user', currentUser); } catch(e) {}
+  updateUserBtn();
+}
+function updateUserBtn() {
+  const btn = document.getElementById('user-btn');
+  if (!btn) return;
+  btn.textContent = currentUser.charAt(0).toUpperCase();
+  btn.title = currentUser;
+}
+function renderUserPanel() {
+  const list = document.getElementById('user-list');
+  if (!list) return;
+  const users = getUsers();
+  list.innerHTML = '';
+  users.forEach(name => {
+    const row = document.createElement('div');
+    row.className = 'up-row' + (name === currentUser ? ' up-current' : '');
+    const nameSpan = document.createElement('span');
+    nameSpan.textContent = (name === currentUser ? '● ' : '○ ') + name;
+    if (name !== currentUser) nameSpan.style.cursor = 'pointer';
+    if (name !== currentUser) nameSpan.onclick = () => switchUser(name);
+    row.appendChild(nameSpan);
+    if (users.length > 1) {
+      const del = document.createElement('button');
+      del.className = 'up-del';
+      del.textContent = '×';
+      del.title = 'Delete ' + name;
+      del.onclick = e => { e.stopPropagation(); if (confirm('Delete ' + name + '?')) deleteUser(name); };
+      row.appendChild(del);
+    }
+    list.appendChild(row);
+  });
+}
+function openUserPanel() {
+  renderUserPanel();
+  const panel = document.getElementById('user-panel');
+  if (panel) { panel.style.display = 'block'; }
+  const inp = document.getElementById('new-user-input');
+  if (inp) inp.value = '';
+}
+function closeUserPanel() {
+  const panel = document.getElementById('user-panel');
+  if (panel) panel.style.display = 'none';
+}
+function switchUser(name) {
+  saveProgress();
+  currentUser = name;
+  try { localStorage.setItem('abcfun_current_user', name); } catch(e) {}
+  updateUserBtn();
+  closeUserPanel();
+  fallingLetters = []; bullets = []; particles = [];
+  if (!loadAndResume()) {
+    state = 'menu';
+    overlay.style.display = 'block';
+    document.getElementById('title').textContent = 'ABC FUN';
+    document.getElementById('subtitle').textContent = 'Match the glowing letter shown at the bottom!';
+    updatePanelLocks();
+  }
+}
+function addUser(name) {
+  name = name.trim().slice(0, 16);
+  if (!name) return;
+  const users = getUsers();
+  if (!users.includes(name)) { users.push(name); saveUsers(users); }
+  switchUser(name);
+}
+function deleteUser(name) {
+  let users = getUsers();
+  users = users.filter(u => u !== name);
+  saveUsers(users);
+  try { localStorage.removeItem('abcfun_save_' + name); } catch(e) {}
+  if (currentUser === name) switchUser(users[0]);
+  else renderUserPanel();
+}
+
+document.getElementById('user-btn').addEventListener('click', () => {
+  const panel = document.getElementById('user-panel');
+  if (!panel.style.display || panel.style.display === 'none') openUserPanel();
+  else closeUserPanel();
+});
+document.getElementById('add-user-confirm').addEventListener('click', () => {
+  addUser(document.getElementById('new-user-input').value);
+});
+document.getElementById('new-user-input').addEventListener('keydown', e => {
+  e.stopPropagation();
+  if (e.key === 'Enter') addUser(e.target.value);
+});
+document.addEventListener('click', e => {
+  const panel = document.getElementById('user-panel');
+  const btn = document.getElementById('user-btn');
+  if (panel && panel.style.display === 'block' && !panel.contains(e.target) && e.target !== btn) closeUserPanel();
+});
+
 buildGroupPanel();
+initUsers();
 initStars();
 if (!loadAndResume()) { /* start at menu */ }
 loop();
