@@ -1708,8 +1708,10 @@ document.addEventListener('click', e => {
   if (panel && panel.style.display === 'block' && !panel.contains(e.target) && e.target !== btn) closeUserPanel();
 });
 document.getElementById('add-player-btn').addEventListener('click', () => {
-  const name = prompt('New player name:');
-  if (name && name.trim()) addUser(name.trim().slice(0, 16));
+  const users = getUsers();
+  const nums = users.map(u => { const m = u.match(/^P(\d+)$/); return m ? parseInt(m[1]) : 0; });
+  const next = Math.max(0, ...nums) + 1;
+  addUser('P' + next);
 });
 
 buildGroupPanel();
