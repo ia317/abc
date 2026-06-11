@@ -1628,6 +1628,11 @@ function renderPlayerColumn() {
     btn.textContent = name.slice(0, 4);
     btn.title = name;
     btn.onclick = () => { if (name !== currentUser) switchUser(name); };
+    btn.oncontextmenu = e => {
+      e.preventDefault();
+      if (getUsers().length <= 1) return;
+      if (confirm('Delete player ' + name + '?')) deleteUser(name);
+    };
     slots.appendChild(btn);
   });
 }
