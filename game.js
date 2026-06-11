@@ -385,24 +385,18 @@ function drawShip(x, y, w, h, alpha) {
 }
 
 function drawFallingLetter(fl) {
-  const color = '#ffffff';
-  const base = BASE_GROUPS[groupIdx];
-  const idx = base.indexOf(fl.letter.toUpperCase());
-  const isLearned = idx >= 0 && learnedFlags[idx];
-
   ctx.save();
   ctx.translate(fl.x, fl.y);
 
-  ctx.fillStyle = isLearned ? '#ffffff08' : '#ffffff11';
+  ctx.fillStyle = '#ffffff11';
   ctx.beginPath();
   ctx.arc(0, 0, 22, 0, Math.PI * 2);
   ctx.fill();
-  ctx.strokeStyle = isLearned ? '#ffffff22' : '#ffffff33';
+  ctx.strokeStyle = '#ffffff33';
   ctx.lineWidth = 1;
   ctx.stroke();
 
-  ctx.globalAlpha = isLearned ? 0.25 : 1;
-  ctx.fillStyle = color + 'cc';
+  ctx.fillStyle = '#ffffffcc';
   ctx.shadowColor = 'transparent';
   ctx.shadowBlur = 0;
   ctx.font = 'bold 22px Courier New';
